@@ -52,17 +52,19 @@ df_selected = df[selected_columns]
 
 #error 越小越好
 # change these values into negative 
-'''
-p1_double_fault
-p2_double_fault
-p1_unf_err
-p2_unf_err
-p1_break_pt_missed
-p2_break_pt_missed
-p1_distance_run
-p2_distance_run
-rally_count
-'''
+columns_to_negate = [
+    "p1_double_fault",
+    "p2_double_fault",
+    "p1_unf_err",
+    "p2_unf_err",
+    "p1_break_pt_missed",
+    "p2_break_pt_missed",
+    "p1_distance_run",
+    "p2_distance_run",
+    "rally_count"
+]
+
+df_selected[columns_to_negate] *= -1
 
 #categorical data
 '''
