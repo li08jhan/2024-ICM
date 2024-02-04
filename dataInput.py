@@ -256,6 +256,8 @@ p2_df = df[columns_order]
 # Create a new DataFrame p1_df_nor
 p1_df_nor = pd.DataFrame()
 
+p1_df_nor['match_id'] = df['match_id']
+p1_df_nor['elapsed_time'] = df['elapsed_time']
 # Assign values to columns
 p1_df_nor["MT"] = 0
 p1_df_nor['sets_ratio'] = df['p1_sets'] / (df['p1_sets'] + df['p2_sets'])
@@ -299,6 +301,24 @@ p1_df_nor.fillna(0, inplace=True)
 
 
 p1_df_nor.to_csv('p1_df_nor.csv', index=False)
+
+
+grouped = p1_df_nor.groupby('match_id')
+
+
+
+# Create an empty dictionary to store the DataFrames
+match_dfs = {}
+
+# Iterate over each group and create a DataFrame for each match
+for match_id, group_df in grouped:
+    match_dfs[f'df_p1{match_id}'] = group_df.copy()
+
+
+for name, df in match_dfs.items():
+    filename = f"{name}_p1.csv"
+    df.to_csv(filename, index=False)
+
 
 
 # Create a new DataFrame p2_df_nor
