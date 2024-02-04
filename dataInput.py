@@ -273,7 +273,7 @@ p1_df_nor['server_p1'] = df['server_p1']
 p1_df_nor['ace_ratio'] = df['ace_p1'] / (df['ace_p1'] + df['ace_p2'])
 p1_df_nor['df_ratio'] = df['p1_double_fault'] / (df['p1_double_fault'] + df['p2_double_fault'])
 p1_df_nor['spead'] = scaler.fit_transform(df[['speed_mph']])
-p1_df["SA_end"] = p1_df_nor[['ace_ratio', 'df_ratio','spead','server_p1' ]].mean(axis=1)
+p1_df_nor["SA_end"] = p1_df_nor[['ace_ratio', 'df_ratio','spead','server_p1' ]].mean(axis=1)
 
 
 
@@ -283,7 +283,7 @@ p1_df_nor['npw_ratio'] = df['p1_net_pt_won'] / (df['p1_net_pt_won'] + df['p2_net
 p1_df_nor['bpw_ratio'] = df['p1_break_pt_won'] / (df['p1_break_pt_won'] + df['p2_break_pt_won'])
 p1_df_nor['pt_victor'] = df['victor1']
 p1_df_nor['pt_winner'] = df['p1_winner']
-p1_df["CPP_end"] = p1_df_nor[['ue_ratio', 'npw_ratio','bpw_ratio','pt_victor','pt_winner' ]].mean(axis=1)
+p1_df_nor["CPP_end"] = p1_df_nor[['ue_ratio', 'npw_ratio','bpw_ratio','pt_victor','pt_winner' ]].mean(axis=1)
 
 
 p1_df_nor["ST"] = 0;
