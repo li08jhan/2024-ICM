@@ -43,8 +43,9 @@ pairwise_matrix = np.array([
 
 weights, consistency_ratio = calculate_weight(pairwise_matrix)
 
-df_p1_read = pd.read_csv('p1_df_nor.csv')
-df_p2_read = pd.read_csv('p2_df_nor.csv')
+df_p1_read = pd.read_csv('p1_data/p1_df'+ "31" +'.csv')
+df_p2_read = pd.read_csv('p2_data/p2_df'+ "31" +'.csv')
+x_values = df_p1_read["elapsed_time"]
 
 df_p1 = df_p1_read[["MT_end","SA_end","CPP_end","ST_end"]]
 df_p2 = df_p2_read[["MT_end","SA_end","CPP_end","ST_end"]]
@@ -74,16 +75,19 @@ print(df_p2)
 
 
 # Plotting the lines
+
+# Plotting the lines with specified x-axis values
 plt.plot(df_p1['Rate'], label='Line 1')
 plt.plot(df_p2['Rate'], label='Line 2')
 
 # Adding labels and title
-plt.xlabel('X-axis label')
-plt.ylabel('Y-axis label')
-plt.title('Ratings of Players')
+plt.xlabel('Point Number')
+plt.ylabel('Evaluation')
+plt.title('Evaluation of two players in match 1701')
 
 # Adding legend
 plt.legend()
 
 # Display the plot
 plt.show()
+
