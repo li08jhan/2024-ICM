@@ -357,21 +357,21 @@ p2_df_nor.fillna(0, inplace=True)
 p2_df_nor.to_csv('p2_df_nor.csv', index=False)
 
 
-
+# Group the DataFrame by 'match_id'
 grouped = p2_df_nor.groupby('match_id')
 
 # Create an empty dictionary to store the DataFrames
 match_dfs = {}
 
 # Iterate over each group and create a DataFrame for each match
-for match_id, group_df in grouped:
-    match_dfs[f'df_p2{match_id}'] = group_df.copy()
+for idx, (_, group_df) in enumerate(grouped):
+    match_dfs[f'df{idx+1}'] = group_df.copy()
 
-
+# Iterate over each DataFrame in match_dfs and save it to a CSV file
 for name, df in match_dfs.items():
-    filename = f"{name}_p2.csv"
+    filename = f"p2_{name}.csv"
     df.to_csv(filename, index=False)
-
+    print(f"CSV file '{filename}' saved successfully.")
 
 
 
