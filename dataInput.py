@@ -223,6 +223,9 @@ df['victor2'] = (df['point_victor'] == 2).astype(int)
 
 #df.to_csv('output.csv', index=False)
 
+# create points culmulative points in a match
+
+
 
 
 # List of columns to shift to the beginning
@@ -296,6 +299,9 @@ p1_df_nor['rally_count_normalized'] = -1*scaler.fit_transform(df[['rally_count']
 p1_df_nor["ST_end"] =p1_df_nor[['distance_ratio', 'rally_count_normalized' ]].mean(axis=1)
 
 
+
+
+
 # Replace all NaN values with 0 in p1_df_nor
 p1_df_nor.fillna(0, inplace=True)
 
@@ -351,6 +357,12 @@ p2_df_nor.fillna(0, inplace=True)
 p2_df_nor.to_csv('p2_df_nor.csv', index=False)
 
 
+
+
+
+
+
+'''
 # Group the DataFrame by 'match_id'
 grouped = p2_df_nor.groupby('match_id')
 
@@ -366,7 +378,7 @@ for name, df in match_dfs.items():
     filename = f"p2_{name}.csv"
     df.to_csv(filename, index=False)
     print(f"CSV file '{filename}' saved successfully.")
-
+'''
 
 
 
