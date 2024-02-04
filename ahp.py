@@ -1,4 +1,6 @@
+import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 def calculate_weight(matrix):
     n = len(matrix)
@@ -41,5 +43,47 @@ pairwise_matrix = np.array([
 
 weights, consistency_ratio = calculate_weight(pairwise_matrix)
 
-print("Weights:", weights)
-print("Consistency Ratio:", consistency_ratio)
+df_p1_read = pd.read_csv('p1_df_nor.csv')
+df_p2_read = pd.read_csv('p2_df_nor.csv')
+
+df_p1 = df_p1_read[["MT_end","SA_end","CPP_end","ST_end"]]
+df_p2 = df_p2_read[["MT_end","SA_end","CPP_end","ST_end"]]
+
+last_rate_1 = 0
+last_rate_2 = 0
+rate_1 = []
+rate_2 = []
+for i in range(df_p1.shape[0]):
+    number_1 = df_p1.iloc[i, 0]*weights[0] + df_p1.iloc[i, 1]*weights[1] + df_p1.iloc[i, 2]*weights[2] + df_p1.iloc[i, 3]*weights[3] + last_rate_1*0.5 - last_rate_2*0.5 
+    number_2 = df_p2.iloc[i, 0]*weights[0] + df_p2.iloc[i, 1]*weights[1] + df_p2.iloc[i, 2]*weights[2] + df_p2.iloc[i, 3]*weights[3] + last_rate_2*0.5 - last_rate_1*0.5 
+
+    last_rate_1 = number_1
+    last_rate_2 = number_2
+    rate_1 = rate_1 + [number_1]
+    rate_2 = rate_2 + [number_2]
+
+df_p1["Rate"] = rate_1
+df_p2["Rate"] = rate_2
+
+print(df_p1)
+print(df_p2)
+    
+
+#print("Weights:", weights)
+#print("Consistency Ratio:", consistency_ratio)
+
+
+# Plotting the lines
+plt.plot(df_p1['Rate'], label='Line 1')
+plt.plot(df_p2['Rate'], label='Line 2')
+
+# Adding labels and title
+plt.xlabel('X-axis label')
+plt.ylabel('Y-axis label')
+plt.title('Ratings of Players')
+
+# Adding legend
+plt.legend()
+
+# Display the plot
+plt.show()
