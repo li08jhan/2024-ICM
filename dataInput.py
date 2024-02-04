@@ -262,7 +262,7 @@ p1_df_nor['sets_ratio'] = df['p1_sets'] / (df['p1_sets'] + df['p2_sets'])
 p1_df_nor['game_ratio'] = df['p1_games'] / (df['p1_games'] + df['p2_games'])
 p1_df_nor['score_ratio'] = df['p1_score'] / (df['p1_score'] + df['p2_score'])
 p1_df_nor['pointswon_ratio'] = df['p1_points_won'] / (df['p1_points_won'] + df['p2_points_won'])
-p1_df_nor['ue_game_ratio'] = df['ue_game_player1'] / (df['ue_game_player1'] + df['ue_game_player2'])
+p1_df_nor['ue_game_ratio'] = -1*(df['ue_game_player1'] / (df['ue_game_player1'] + df['ue_game_player2']))
 p1_df_nor['npr_game_ratio'] = df['npr_game_p1'] / (df['npr_game_p1'] + df['npr_game_p2'])
 p1_df_nor["MT_end"] = p1_df_nor[['sets_ratio', 'game_ratio', 'score_ratio', 'pointswon_ratio', 'ue_game_ratio', 'npr_game_ratio']].mean(axis=1)
 
@@ -271,14 +271,14 @@ scaler = MinMaxScaler(feature_range=(0, 1))
 p1_df_nor["SA"] = 0;
 p1_df_nor['server_p1'] = df['server_p1']
 p1_df_nor['ace_ratio'] = df['ace_p1'] / (df['ace_p1'] + df['ace_p2'])
-p1_df_nor['df_ratio'] = df['p1_double_fault'] / (df['p1_double_fault'] + df['p2_double_fault'])
+p1_df_nor['df_ratio'] = -1*df['p1_double_fault'] / (df['p1_double_fault'] + df['p2_double_fault'])
 p1_df_nor['spead'] = scaler.fit_transform(df[['speed_mph']])
 p1_df_nor["SA_end"] = p1_df_nor[['ace_ratio', 'df_ratio','spead','server_p1' ]].mean(axis=1)
 
 
 
 p1_df_nor["CPP"] = 0;
-p1_df_nor['ue_ratio'] = df['ue_game_player1'] / (df['ue_game_player1'] + df['ue_game_player2'])
+p1_df_nor['ue_ratio'] = -1*(df['ue_game_player1'] / (df['ue_game_player1'] + df['ue_game_player2']))
 p1_df_nor['npw_ratio'] = df['p1_net_pt_won'] / (df['p1_net_pt_won'] + df['p2_net_pt_won'])
 p1_df_nor['bpw_ratio'] = df['p1_break_pt_won'] / (df['p1_break_pt_won'] + df['p2_break_pt_won'])
 p1_df_nor['pt_victor'] = df['victor1']
@@ -286,9 +286,10 @@ p1_df_nor['pt_winner'] = df['p1_winner']
 p1_df_nor["CPP_end"] = p1_df_nor[['ue_ratio', 'npw_ratio','bpw_ratio','pt_victor','pt_winner' ]].mean(axis=1)
 
 
+
 p1_df_nor["ST"] = 0;
-p1_df_nor['distance_ratio'] = df['p1_distance_run'] / (df['p1_distance_run'] + df['p2_distance_run'])
-p1_df_nor['rally_count_normalized'] = scaler.fit_transform(df[['rally_count']])
+p1_df_nor['distance_ratio'] = -1*(df['p1_distance_run'] / (df['p1_distance_run'] + df['p2_distance_run']))
+p1_df_nor['rally_count_normalized'] = -1*scaler.fit_transform(df[['rally_count']])
 
 p1_df_nor["ST_end"] =p1_df_nor[['distance_ratio', 'rally_count_normalized' ]].mean(axis=1)
 
@@ -309,7 +310,7 @@ p2_df_nor['sets_ratio'] = df['p2_sets'] / (df['p2_sets'] + df['p1_sets'])
 p2_df_nor['game_ratio'] = df['p2_games'] / (df['p2_games'] + df['p1_games'])
 p2_df_nor['score_ratio'] = df['p2_score'] / (df['p2_score'] + df['p1_score'])
 p2_df_nor['pointswon_ratio'] = df['p2_points_won'] / (df['p2_points_won'] + df['p1_points_won'])
-p2_df_nor['ue_game_ratio'] = df['ue_game_player2'] / (df['ue_game_player2'] + df['ue_game_player1'])
+p2_df_nor['ue_game_ratio'] = -1*df['ue_game_player2'] / (df['ue_game_player2'] + df['ue_game_player1'])
 p2_df_nor['npr_game_ratio'] = df['npr_game_p2'] / (df['npr_game_p2'] + df['npr_game_p1'])
 p2_df_nor["MT_end"] = p2_df_nor[['sets_ratio', 'game_ratio', 'score_ratio', 'pointswon_ratio', 'ue_game_ratio', 'npr_game_ratio']].mean(axis=1)
 
@@ -318,25 +319,24 @@ p2_df_nor["MT_end"] = p2_df_nor[['sets_ratio', 'game_ratio', 'score_ratio', 'poi
 p2_df_nor["SA"] = 0;
 p2_df_nor['server_p2'] = df['server_p1']
 p2_df_nor['ace_ratio'] = df['ace_p2'] / (df['ace_p2'] + df['ace_p1'])
-p2_df_nor['df_ratio'] = df['p2_double_fault'] / (df['p2_double_fault'] + df['p1_double_fault'])
+p2_df_nor['df_ratio'] = -1*df['p2_double_fault'] / (df['p2_double_fault'] + df['p1_double_fault'])
 p2_df_nor['spead'] = scaler.fit_transform(df[['speed_mph']])
 p2_df_nor["SA_end"] = p2_df_nor[['ace_ratio', 'df_ratio','spead','server_p2' ]].mean(axis=1)
 
 
 
 p2_df_nor["CPP"] = 0;
-p2_df_nor['ue_ratio'] = df['ue_game_player2'] / (df['ue_game_player2'] + df['ue_game_player1'])
+p2_df_nor['ue_ratio'] = -1*df['ue_game_player2'] / (df['ue_game_player2'] + df['ue_game_player1'])
 p2_df_nor['npw_ratio'] = df['p2_net_pt_won'] / (df['p2_net_pt_won'] + df['p1_net_pt_won'])
 p2_df_nor['bpw_ratio'] = df['p2_break_pt_won'] / (df['p2_break_pt_won'] + df['p1_break_pt_won'])
 p2_df_nor['pt_victor'] = df['victor2']
 p2_df_nor['pt_winner'] = df['p2_winner']
 p2_df_nor["CPP_end"] = p2_df_nor[['ue_ratio', 'npw_ratio','bpw_ratio','pt_victor','pt_winner' ]].mean(axis=1)
 
-scaler = MinMaxScaler(feature_range=(0, 1))
 
 p2_df_nor["ST"] = 0;
-p2_df_nor['distance_ratio'] = df['p2_distance_run'] / (df['p2_distance_run'] + df['p1_distance_run'])
-p2_df_nor['rally_count_normalized'] = scaler.fit_transform(df[['rally_count']])
+p2_df_nor['distance_ratio'] = -1*df['p2_distance_run'] / (df['p2_distance_run'] + df['p1_distance_run'])
+p2_df_nor['rally_count_normalized'] = -1*scaler.fit_transform(df[['rally_count']])
 p2_df_nor["ST_end"] =p2_df_nor[['distance_ratio', 'rally_count_normalized' ]].mean(axis=1)
 
 
@@ -345,6 +345,10 @@ p2_df_nor.fillna(0, inplace=True)
 
 
 p2_df_nor.to_csv('p2_df_nor.csv', index=False)
+
+
+
+
 
 
 
