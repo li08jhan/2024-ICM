@@ -277,16 +277,14 @@ p1_df_nor["MT_end"] = p1_df_nor[['sets_ratio', 'game_ratio', 'score_ratio', 'ue_
 
 
 
-scaler = MinMaxScaler(feature_range=(0, 1))
-
 p1_df_nor["SA"] = 0;
 p1_df_nor['server_p1'] = df['server_p1']
 p1_df_nor['ace_ratio'] = df['ace_p1']
 p1_df_nor['df_ratio'] = -1*df['p1_double_fault']/ df['serve_num_game_p1']
-p1_df_nor['spead'] = scaler.fit_transform(df[['speed_mph']])
+p1_df_nor['spead'] = df[['speed_mph']]/141.0
 p1_df_nor["SA_end"] = p1_df_nor[['ace_ratio', 'df_ratio','spead','server_p1' ]].mean(axis=1)
 
-
+scaler = MinMaxScaler(feature_range=(0, 1))
 
 p1_df_nor["CPP"] = 0;
 p1_df_nor['ue_ratio'] = -1*(df['ue_game_player1']/2)
@@ -335,7 +333,7 @@ p2_df_nor["SA"] = 0;
 p2_df_nor['server_p2'] = df['server_p1']
 p2_df_nor['ace_ratio'] = df['ace_p2']
 p2_df_nor['df_ratio'] = -1*df['p2_double_fault']
-p2_df_nor['spead'] = df[['speed_mph']]
+p2_df_nor['spead'] = df[['speed_mph']]/ 141.0
 p2_df_nor["SA_end"] = p2_df_nor[['ace_ratio', 'df_ratio','spead','server_p2' ]].mean(axis=1)
 
 
@@ -353,10 +351,13 @@ p2_df_nor["ST"] = 0;
 p2_df_nor['distance_ratio'] = df['p2_distance_run']
 p2_df_nor['rally_count_normalized'] = -1*scaler.fit_transform(df[['rally_count']])
 
+'''
+max_speed = max(p1_df_nor['spead'].max(), p2_df_nor['spead'].max())
+print(max_speed)
+'''
 
 # Replace all NaN values with 0 in p2_df_nor
 p2_df_nor.fillna(0, inplace=True)
-
 
 
 
@@ -386,9 +387,11 @@ p1_df_nor.to_csv('p1_df_nor.csv', index=False)
 p2_df_nor["ST_end"] =p2_df_nor[['distance_ratio', 'rally_count_normalized' ]].mean(axis=1)
 p2_df_nor.to_csv('p2_df_nor.csv', index=False)
 
-'''
+
+
+
 # Group the DataFrame by 'match_id'
-grouped = p2_df_nor.groupby('match_id')
+grouped = p1_df_nor.groupby('match_id')
 
 # Create an empty dictionary to store the DataFrames
 match_dfs = {}
@@ -399,10 +402,9 @@ for idx, (_, group_df) in enumerate(grouped):
 
 # Iterate over each DataFrame in match_dfs and save it to a CSV file
 for name, df in match_dfs.items():
-    filename = f"p2_{name}.csv"
+    filename = f"p1_{name}.csv"
     df.to_csv(filename, index=False)
     print(f"CSV file '{filename}' saved successfully.")
-'''
 
 
 
