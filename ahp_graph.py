@@ -43,30 +43,37 @@ pairwise_matrix = np.array([
 
 weights, consistency_ratio = calculate_weight(pairwise_matrix)
 
-df_p1_read = pd.read_csv('p1_data_new/p1_df1.csv')
-df_p2_read = pd.read_csv('new_df.csv')
-x_values = df_p1_read["elapsed_time"]
+for i in range(1,32):
+    df_p1_read = pd.read_csv('p1_data_new/p1_df'+ str(i) + '.csv')
+    df_p2_read = pd.read_csv('data_new_p2/p2_df'+ str(i) + '.csv')
+
+    x_values = df_p1_read["elapsed_time"]
 
 
-df_p1 = df_p1_read[["MT_end","SA_end","CPP_end","ST_end"]]
-df_p2 = df_p2_read[["MT_end","SA_end","CPP_end","ST_end"]]
+    df_p1 = df_p1_read[["MT_end","SA_end","CPP_end","ST_end"]]
+    df_p2 = df_p2_read[["MT_end","SA_end","CPP_end","ST_end"]]
 
-last_rate_1 = 0
-last_rate_2 = 0
-rate_1 = []
-rate_2 = []
-for i in range(df_p2.shape[0]):
-    number_1 = df_p1.iloc[i, 0]*weights[0] + df_p1.iloc[i, 1]*weights[1] + df_p1.iloc[i, 2]*weights[2] + df_p1.iloc[i, 3]*weights[3] + last_rate_1*0.5 - last_rate_2*0.5 
-    number_2 = df_p2.iloc[i, 0]*weights[0] + df_p2.iloc[i, 1]*weights[1] + df_p2.iloc[i, 2]*weights[2] + df_p2.iloc[i, 3]*weights[3] + last_rate_2*0.5 - last_rate_1*0.5 
+    last_rate_1 = 0
+    last_rate_2 = 0
+    rate_1 = []
+    rate_2 = []
+    for a in range(df_p2.shape[0]):
+        number_1 = df_p1.iloc[i, 0]*weights[0] + df_p1.iloc[i, 1]*weights[1] + df_p1.iloc[i, 2]*weights[2] + df_p1.iloc[i, 3]*weights[3] + last_rate_1*0.5 - last_rate_2*0.5 
+        number_2 = df_p2.iloc[i, 0]*weights[0] + df_p2.iloc[i, 1]*weights[1] + df_p2.iloc[i, 2]*weights[2] + df_p2.iloc[i, 3]*weights[3] + last_rate_2*0.5 - last_rate_1*0.5 
 
-    last_rate_1 = number_1
-    last_rate_2 = number_2
-    rate_1 = rate_1 + [number_1]
-    rate_2 = rate_2 + [number_2]
+        last_rate_1 = number_1
+        last_rate_2 = number_2
+        rate_1 = rate_1 + [number_1]
+        rate_2 = rate_2 + [number_2]
 
-df_p1["Rate"] = rate_1
-df_p2["Rate"] = rate_2
+    df_p1_read["Rate"] = rate_1
+    df_p2_read["Rate"] = rate_2
 
+    df_p1_read.to_csv("p1_data_new/p1_df"+ str(i) + ".csv", index=False)
+    df_p2_read.to_csv("data_new_p2/p2_df"+ str(i) + ".csv", index=False)
+
+
+'''
 # Plotting the lines
 
 #Plotting the lines with specified x-axis values
@@ -83,3 +90,4 @@ plt.legend()
 
 # Display the plot
 plt.show()
+'''
