@@ -251,7 +251,7 @@ plt.show()
 
 # Plotting the lines
 
-# Plotting the lines with specified x-axis values
+Plotting the lines with specified x-axis values
 plt.plot(df_p1['Rate'], label='Line 1')
 plt.plot(df_p2['Rate'], label='Line 2')
 

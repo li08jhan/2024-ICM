@@ -45,8 +45,10 @@ pairwise_matrix = np.array([
 
 weights, consistency_ratio = calculate_weight(pairwise_matrix)
 
-df_p1_read = pd.read_csv('p1_data/p1_df'+ "1" +'.csv')
-df_p2_read = pd.read_csv('p2_data/p2_df'+ "1" +'.csv')
+#df_p1_read = pd.read_csv('p1_data_new/p1_df'+ "1" +'.csv')
+#df_p2_read = pd.read_csv('data_new_p2/p2_df'+ "1" +'.csv')
+df_p1_read = pd.read_csv('p1_df_nor.csv')
+df_p2_read = pd.read_csv('p2_df_nor.csv')
 x_values = df_p1_read["elapsed_time"]
 
 
@@ -69,25 +71,27 @@ for i in range(df_p1.shape[0]):
 df_p1["Rate"] = rate_1
 df_p2["Rate"] = rate_2
 
+#print(df_p1)
+#print(df_p2)
+
 df_p1_corr = df_p1[["Rate"]]
 df_p1_corr["Win"] = df_p1_read["pt_victor"]
 df_p2_corr = df_p2[["Rate"]]
 df_p2_corr["Win"] = df_p2_read["pt_victor"]
 
 
-p1_slope = [0,0,0]
-p2_slope = [0,0,0]
+p1_slope = [0,0]
+p2_slope = [0,0]
 
-for i in range(3,df_p1_corr.shape[0]):
-    s1 = (df_p1_corr.iloc[i,0] - df_p1_corr.iloc[i-3,0])/3
-    s2 = (df_p1_corr.iloc[i,0] - df_p1_corr.iloc[i-3,0])/3
+for i in range(2,df_p1_corr.shape[0]):
+    s1 = (df_p1_corr.iloc[i,0] - df_p1_corr.iloc[i-2,0])/2
+    s2 = (df_p1_corr.iloc[i,0] - df_p1_corr.iloc[i-2,0])/2
     
     p1_slope.append(s1)
     p2_slope.append(s2)
 
 df_p1_corr["Slope"] = p1_slope
 df_p2_corr["Slope"] = p2_slope
-
 
 all_win3 = []
 sum = 0
@@ -107,12 +111,12 @@ momentum_p1 = []
 momentum_p2 = []
 
 for i in range(df_p1_corr.shape[0]):
-    if df_p1_corr.iloc[i,2] > sim:
+    if df_p1_corr.iloc[i,2] > 0.07:
         m1 = "M"
     else:
         m1 = "N"
     
-    if df_p2_corr.iloc[i,2] > sim:
+    if df_p2_corr.iloc[i,2] > 0.07:
         m2 = "M"
     else:
         m2 = "N" 
@@ -124,8 +128,11 @@ df_p1_corr["Momentum"] = momentum_p1
 df_p2_corr["Momentum"] = momentum_p2
 
 
-#print(df_p1_corr)
-#print(df_p2_corr)
+print(df_p1_corr)
+print(df_p2_corr)
+
+df_p1_corr.to_csv('dfp1corr.csv', index=False)
+df_p2_corr.to_csv('dfp2corr.csv', index=False)
 
 # Assuming you have a pandas DataFrame named 'df' with two categorical columns 'column1' and 'column2'
 # Replace 'column1' and 'column2' with your actual column names
@@ -135,6 +142,20 @@ df_p2_corr["Momentum"] = momentum_p2
 # Create a contingency table using pd.crosstab
 
 contingency_table = pd.crosstab(df_p1_corr['Momentum'], df_p1_corr['Win'])
+
+# Perform chi-square test using scipy.stats.chi2_contingency
+
+chi2, p, dof, expected = chi2_contingency(contingency_table)
+
+# Display the results
+print(f"Chi-square value: {chi2}")
+print(f"P-value: {p}")
+print(f"Degrees of freedom: {dof}")
+print("Contingency table:")
+print(expected)
+
+
+contingency_table = pd.crosstab(df_p2_corr['Momentum'], df_p2_corr['Win'])
 
 # Perform chi-square test using scipy.stats.chi2_contingency
 
