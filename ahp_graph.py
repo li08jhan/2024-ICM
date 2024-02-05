@@ -58,8 +58,8 @@ for i in range(1,32):
     rate_1 = []
     rate_2 = []
     for a in range(df_p2.shape[0]):
-        number_1 = df_p1.iloc[i, 0]*weights[0] + df_p1.iloc[i, 1]*weights[1] + df_p1.iloc[i, 2]*weights[2] + df_p1.iloc[i, 3]*weights[3] + last_rate_1*0.5 - last_rate_2*0.5 
-        number_2 = df_p2.iloc[i, 0]*weights[0] + df_p2.iloc[i, 1]*weights[1] + df_p2.iloc[i, 2]*weights[2] + df_p2.iloc[i, 3]*weights[3] + last_rate_2*0.5 - last_rate_1*0.5 
+        number_1 = df_p1.iloc[a, 0]*weights[0] + df_p1.iloc[a, 1]*weights[1] + df_p1.iloc[a, 2]*weights[2] + df_p1.iloc[a, 3]*weights[3] + last_rate_1*0.5 - last_rate_2*0.5 
+        number_2 = df_p2.iloc[a, 0]*weights[0] + df_p2.iloc[a, 1]*weights[1] + df_p2.iloc[a, 2]*weights[2] + df_p2.iloc[a, 3]*weights[3] + last_rate_2*0.5 - last_rate_1*0.5 
 
         last_rate_1 = number_1
         last_rate_2 = number_2
