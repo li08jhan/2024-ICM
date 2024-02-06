@@ -43,9 +43,8 @@ pairwise_matrix = np.array([
 
 weights, consistency_ratio = calculate_weight(pairwise_matrix)
 
-df_p1_read = pd.read_csv('p1_data/p1_df'+ "31" +'.csv')
-df_p2_read = pd.read_csv('p2_data/p2_df'+ "31" +'.csv')
-x_values = df_p1_read["elapsed_time"]
+df_p1_read = pd.read_csv('p1_df_nor.csv')
+df_p2_read = pd.read_csv('p2_df_nor.csv')
 
 '''
 df_p1 = df_p1_read[["MT_end","SA_end","CPP_end","ST_end"]]
@@ -68,7 +67,12 @@ df_p1["Rate"] = rate_1
 df_p2["Rate"] = rate_2
 '''
 
-    
+
+
+
+df_p1_read = pd.read_csv('p1_df_nor.csv')
+
+df_p2_read = pd.read_csv('p2_df_nor.csv')
 
 #print("Weights:", weights)
 #print("Consistency Ratio:", consistency_ratio)
@@ -76,6 +80,8 @@ df_p2["Rate"] = rate_2
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
+
+
 
 # Get the list of columns
 columns = df_p1_read.columns.tolist()
@@ -175,6 +181,7 @@ for index, row in df_p1_read.iterrows():
     elif row['predict_victor'] == 1:
         counter_1 += 1
 
+
 # Update 'match_victor' column for the last match
 if counter_1 > counter_0:
     df_p1_read.loc[df_p1_read['match_id'] == current_match_id, 'match_predict_victor'] = 1
@@ -184,16 +191,225 @@ elif counter_0 > counter_1:
 df_p1_read.to_csv('test.csv', index=False)
 
 
+
 # Count the number of correct predictions
 correct_predictions = (df_p1_read['match_predict_victor'] == df_p1_read['match_victor']).sum()
 
 # Calculate the total number of predictions
 total_predictions = len(df_p1_read)
 
-# Calculate accuracy
-accuracy = correct_predictions / total_predictions
+# Initialize variables to store the number of correct predictions and total matches
+correct_predictions = 0
+total_matches = 0
 
+# Iterate over each match
+for match_id in df_p1_read['match_id'].unique():
+    # Get the subset of rows for the current match
+    match_df = df_p1_read[df_p1_read['match_id'] == match_id]
+    
+    # Check if there is at least one prediction for this match
+    if len(match_df) > 0:
+        # Get the predicted match victor for the last row of the match
+        predicted_victor = match_df.iloc[-1]['match_predict_victor']
+        
+        # Get the actual match victor for the last row of the match
+        actual_victor = match_df.iloc[-1]['match_victor']
+        
+        # Increment the total number of matches
+        total_matches += 1
+        
+        # Check if the predicted match victor matches the actual match victor
+        if predicted_victor == actual_victor:
+            # Increment the number of correct predictions
+            correct_predictions += 1
+
+# Calculate the accuracy
+accuracy = correct_predictions / total_matches
+
+print("Number of correct predictions:", correct_predictions)
+print("Total number of matches:", total_matches)
 print("Accuracy:", accuracy)
+
+# p2 player
+
+print("")
+
+
+
+df_p2_read = pd.read_csv('p2_df_nor.csv')
+
+#print("Weights:", weights)
+#print("Consistency Ratio:", consistency_ratio)
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# Get the list of columns
+columns = df_p2_read.columns.tolist()
+
+# Move 'pt_victor' to the end
+columns.append(columns.pop(columns.index('pt_victor')))
+
+# Reassign the DataFrame with the new column order
+df_p2_read = df_p2_read[columns]
+
+# Use logistic regression model to predict the outcome for each games
+
+# Step 1: Split the data into features (X) and target variable (y)
+X = df_p2_read[['MT_end', 'SA_end', 'CPP_end', 'ST_end']]
+y = df_p2_read['pt_victor']
+
+# Step 2: Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 3: Initialize the logistic regression model
+model = LogisticRegression()
+
+# Step 4: Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Step 5: Make predictions on the testing data
+y_pred = model.predict(X_test)
+
+# Step 6: Evaluate the performance of the model
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+
+# Step 7: Make predictions on the entire dataset
+df_p2_read['predict_victor'] = model.predict(X)
+
+# Optionally, you can also add the predicted outcomes for the test set only
+# df_p2_read.loc[X_test.index, 'predict_victor'] = y_pred
+
+# Now, 'predict_victor' column contains the predicted outcomes
+print(df_p2_read.head())
+
+
+# Assuming df_p2_read is your DataFrame
+df_p2_read['match_victor'] = -1  # Initialize 'match_victor' column with -1
+counter_0 = 0  # Counter for number of 0s
+counter_1 = 0  # Counter for number of 1s
+current_match_id = None  # Variable to store current match_id
+
+# Iterate through the DataFrame
+for index, row in df_p2_read.iterrows():
+    # Check if match_id changed
+    if row['match_id'] != current_match_id:
+        # Update 'match_victor' column based on counters
+        if counter_1 > counter_0:
+            df_p2_read.loc[df_p2_read['match_id'] == current_match_id, 'match_victor'] = 1
+        elif counter_0 > counter_1:
+            df_p2_read.loc[df_p2_read['match_id'] == current_match_id, 'match_victor'] = 0
+        
+        # Reset counters and update current_match_id
+        counter_0 = 0
+        counter_1 = 0
+        current_match_id = row['match_id']
+    
+    # Update counters based on 'point_victor' value
+    if row['pt_victor'] == 0:
+        counter_0 += 1
+    elif row['pt_victor'] == 1:
+        counter_1 += 1
+
+# Update 'match_victor' column for the last match
+if counter_1 > counter_0:
+    df_p2_read.loc[df_p2_read['match_id'] == current_match_id, 'match_victor'] = 1
+elif counter_0 > counter_1:
+    df_p2_read.loc[df_p2_read['match_id'] == current_match_id, 'match_victor'] = 0
+
+
+df_p2_read['match_predict_victor'] = -1 
+# Iterate through the DataFrame
+for index, row in df_p2_read.iterrows():
+    # Check if match_id changed
+    if row['match_id'] != current_match_id:
+        # Update 'match_victor' column based on counters
+        if counter_1 > counter_0:
+            df_p2_read.loc[df_p2_read['match_id'] == current_match_id, 'match_predict_victor'] = 1
+        elif counter_0 > counter_1:
+            df_p2_read.loc[df_p2_read['match_id'] == current_match_id, 'match_predict_victor'] = 0
+        
+        # Reset counters and update current_match_id
+        counter_0 = 0
+        counter_1 = 0
+        current_match_id = row['match_id']
+    
+    # Update counters based on 'point_victor' value
+    if row['predict_victor'] == 0:
+        counter_0 += 1
+    elif row['predict_victor'] == 1:
+        counter_1 += 1
+
+# Update 'match_victor' column for the last match
+if counter_1 > counter_0:
+    df_p2_read.loc[df_p2_read['match_id'] == current_match_id, 'match_predict_victor'] = 1
+elif counter_0 > counter_1:
+    df_p2_read.loc[df_p2_read['match_id'] == current_match_id, 'match_predict_victor'] = 0
+
+df_p2_read.to_csv('test.csv', index=False)
+
+# Count the number of correct predictions
+correct_predictions = (df_p2_read['match_predict_victor'] == df_p2_read['match_victor']).sum()
+
+# Calculate the total number of predictions
+total_predictions = len(df_p2_read)
+
+# Initialize variables to store the number of correct predictions and total matches
+correct_predictions = 0
+total_matches = 0
+
+# Iterate over each match
+for match_id in df_p2_read['match_id'].unique():
+    # Get the subset of rows for the current match
+    match_df = df_p2_read[df_p2_read['match_id'] == match_id]
+    
+    # Check if there is at least one prediction for this match
+    if len(match_df) > 0:
+        # Get the predicted match victor for the last row of the match
+        predicted_victor = match_df.iloc[-1]['match_predict_victor']
+        
+        # Get the actual match victor for the last row of the match
+        actual_victor = match_df.iloc[-1]['match_victor']
+        
+        # Increment the total number of matches
+        total_matches += 1
+        
+        # Check if the predicted match victor matches the actual match victor
+        if predicted_victor == actual_victor:
+            # Increment the number of correct predictions
+            correct_predictions += 1
+
+# Calculate the accuracy
+accuracy = correct_predictions / total_matches
+
+print("Number of correct predictions:", correct_predictions)
+print("Total number of matches:", total_matches)
+print("Accuracy:", accuracy) 
+
+
+
+
+# Merge the columns of df_p1_read and df_p2_read based on 'match_id'
+merged_df = pd.merge(df_p1_read[['match_id', 'match_victor', 'match_predict_victor']], 
+                     df_p2_read[['match_id', 'match_victor', 'match_predict_victor']], 
+                     on='match_id', suffixes=('_p1', '_p2'))
+
+# Sort the rows by 'match_id'
+merged_df.sort_values(by='match_id', inplace=True)
+
+# Reset index
+merged_df.reset_index(drop=True, inplace=True)
+
+# Display the merge
+
+# Define the file path for the output CSV file
+output_file_path = 'merged_dataframe.csv'
+
+# Output the merged dataframe to a CSV file
+merged_df.to_csv(output_file_path, index=False)
 
 
 
@@ -250,15 +466,13 @@ plt.show()
 '''
 
 # Plotting the lines
-
-Plotting the lines with specified x-axis values
 plt.plot(df_p1['Rate'], label='Line 1')
 plt.plot(df_p2['Rate'], label='Line 2')
 
 # Adding labels and title
-plt.xlabel('Point Number')
-plt.ylabel('Evaluation')
-plt.title('Evaluation of two players in match 1701')
+plt.xlabel('X-axis label')
+plt.ylabel('Y-axis label')
+plt.title('Ratings of Players')
 
 # Adding legend
 plt.legend()
